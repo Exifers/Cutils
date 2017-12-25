@@ -1,9 +1,19 @@
-file=$1.h
+#! /bin/sh
 
-echo "#ifndef FOO" > $file
-echo "# define FOO" >> $file
-echo "" >> $file
-sed -n '/^[^ ]*[ ]*[^ (]\+ [^ (]\+([^;]\+) *{* *$/p' * | sed 's/ *{* *$/;/' \
->> $file
-echo "" >> $file
-echo "#endif /* !FOO */" >> $file
+if [ "$#" -le "0" ]
+then
+  echo "Usage : ./hgen <outputname>"
+  exit
+fi
+
+output="$1".h
+format=$(echo $output | sed 's/./\U&/g' | sed 's/\./_/g')
+files=$(find . -name "*.c")
+
+echo "#ifndef $format" > $output
+echo "# define $format" >> $output
+echo "" >> $output
+sed -n '/^[^ ]*[ ]*[^ (]\+ [^ (]\+([^;]\+) *{* *$/p' $files | \
+sed 's/ *{* *$/;/' >> $output
+echo "" >> $output
+echo "#endif /* !$format */" >> $output
