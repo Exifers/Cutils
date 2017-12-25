@@ -10,7 +10,7 @@ and puts them as prototypes in a .h file whose name is specified as argument.
 Resulting file contains common preprocessor directives #ifndef, #define, etc.
 
 # Usage
-./hgen.sh <outputname> <search_dir>
+./hgen.sh \<outputname\> \<search_dir\>
 
 # Licence
 Public domain.
