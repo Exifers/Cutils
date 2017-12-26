@@ -9,18 +9,26 @@ if [ -z "$2" ]; then
   $2='.'
 fi
 
-output=$1.h
-format=$(echo $output | sed 's/./\U&/g' | sed 's/\./_/g')
-files=$(find $2 -name "*.c")
+files=$(find $2 -name "*.c" -type f)
 
 if [ -z "$files" ]; then
   exit
 fi
 
-echo "#ifndef $format" > $output
-echo "# define $format" >> $output
-echo "" >> $output
-sed -n '/^[^ ]*[ ]*[^ (]\+ [^ (]\+([^;]\+) *{* *$/p' $files | \
-sed 's/ *{* *$/;/' >> $output
-echo "" >> $output
-echo "#endif /* !$format */" >> $output
+
+for file in $files; do
+
+  output=$(echo $file | sed 's/\.c$/\.h/g')
+  echo $output
+  basename=$(echo $output | grep -e '\/[^\/]\+$' -o | grep -e '[^\/]*' -o)
+  format=$(echo $basename | sed 's/./\U&/g' | sed 's/\./_/g')
+  
+  echo "#ifndef $format" > $output
+  echo "# define $format" >> $output
+  echo "" >> $output
+  sed -n '/^[^ ]*[ ]*[^ (]\+ [^ (]\+([^;]\+) *{* *$/p' $file | \
+  sed 's/ *{* *$/;/' >> $output
+  echo "" >> $output
+  echo "#endif /* !$format */" >> $output
+
+done
