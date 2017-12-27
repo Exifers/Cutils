@@ -1,0 +1,57 @@
+#! /bin/bash
+
+read -p "Project name : "
+name=$REPLY
+read -p "Author(s) : "
+authors=$REPLY
+read -p "Source directory : "
+srcdir=$REPLY
+read -p "Include linked list (y/n) : "
+list=$REPLY
+read -p "Include dictionary (y/n) : "
+dict=$REPLY
+
+mkdir $name
+cd $name
+
+echo "$authors" > AUTHORS
+
+echo "$name" > TODO
+
+printf \
+"srcdir := src/
+bin    := $name
+
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic
+
+debug : CFLAGS += -g
+
+src := \$(shell find \$(srcdir) -name *.c)
+obj := \$(src:%%.c=%%.o)
+
+all: \$(obj)
+	\$(CC) \$(CFLAGS) $< -o \$(bin)
+
+debug : \$(obj)
+	\$(CC) \$(CFLAGS) $< -o \$(bin)
+
+clean:
+	\$(RM) \$(obj) \$(bin)
+
+.PHONY: all debug clean
+" > Makefile
+
+mkdir $srcdir
+cd $srcdir
+printf \
+"#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+  return 0;
+}" > main.c
+cd ..
+
+echo "Project has been created successfully"
