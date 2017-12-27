@@ -53,8 +53,9 @@ DATA_TYPE llist_pop(struct llist *l)
   if (!cur->next)
   {
     DATA_TYPE ret = cur->data;
-    if (FREE_DATA)
+    #if FREE_DATA != 0
       free(cur->data);
+    #endif
     free(cur);
     l->head = NULL;
     l->size--;
@@ -64,8 +65,9 @@ DATA_TYPE llist_pop(struct llist *l)
   while(cur->next->next)
     cur = cur->next;
   DATA_TYPE ret = cur->next->data;
-  if (FREE_DATA)
+  #if FREE_DATA != 0
     free(cur->next->data);
+  #endif
   free(cur->next);
   cur->next = NULL;
   l->size--;
