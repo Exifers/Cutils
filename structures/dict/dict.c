@@ -17,7 +17,11 @@ struct dict *dict_init(void)
   return res;
 }
 
-void dict_append(struct dict *d, DATA_TYPE data, char *key)
+void dict_append(struct dict *d, DATA_TYPE data,                                
+                 #if ADD_TYPE_ENUM == 1                                         
+                 TYPE_ENUM type,                                                
+                 #endif                                                         
+                 char *key)
 {
   if (!d)
     errx(1, "dictionary is NULL");
@@ -28,6 +32,9 @@ void dict_append(struct dict *d, DATA_TYPE data, char *key)
   new->data = data;
   new->key = key;
   new->next = NULL;
+  #if ADD_TYPE_ENUM == 1                                         
+  new->type = type;                                                
+  #endif
 
   struct dict_elt *cur = d->head;
   if (!cur)
@@ -42,7 +49,7 @@ void dict_append(struct dict *d, DATA_TYPE data, char *key)
   d->size++;
 }
 
-DATA_TYPE dict_pop(struct dict *d)
+void dict_pop(struct dict *d)
 {
   if (!d)
     errx(1, "dictionary is NULL");
@@ -50,25 +57,28 @@ DATA_TYPE dict_pop(struct dict *d)
   struct dict_elt *cur = d->head;
 
   if (!cur)
-    return NULL_DATA;
+    return;
 
   if (!cur->next)
   {
-    DATA_TYPE ret = cur->data;
+    #if FREE_DATA == 1
+    free(cur->data)
+    #endif
     free(cur);
     d->head = NULL;
     d->size--;
-    return ret;
+    return;
   }
 
   while(cur->next->next)
     cur = cur->next;
-  DATA_TYPE ret = cur->next->data;
+
+  #if FREE_DATA == 1
+  free(cur->next->data)
+  #endif
   free(cur->next);
   cur->next = NULL;
   d->size--;
-
-  return ret;
 }
 
 DATA_TYPE dict_get_item(struct dict *d, char *key)
@@ -102,8 +112,8 @@ void dict_free(struct dict *d)
 
   size_t size = d->size;
   for (size_t i = 0; i < size; i++)
-    dict_pop(l);
-  free(l);
+    dict_pop(d);
+  free(d);
 }
 
 void dict_print(struct dict *d, void (*print_fun)(DATA_TYPE data))
@@ -111,7 +121,7 @@ void dict_print(struct dict *d, void (*print_fun)(DATA_TYPE data))
   if (!d)
     errx(1, "dictionary is NULL");
   
-  if (l->size == 0)
+  if (d->size == 0)
   {
     printf("empty dictionary\n");
     return;
@@ -120,7 +130,7 @@ void dict_print(struct dict *d, void (*print_fun)(DATA_TYPE data))
   struct dict_elt *cur = d->head;
   for (size_t i = 0; i < d->size; i++)
   {
-    printf("%s : ", cyr->key);
+    printf("%s : ", cur->key);
     print_fun(cur->data);
     printf("\n");
     cur = cur->next;

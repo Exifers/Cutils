@@ -16,16 +16,23 @@ struct llist *llist_init(void)
   return res;
 }
 
-void llist_append(struct llist *l, DATA_TYPE data)
+void llist_append(struct llist *l, DATA_TYPE data
+                  #if ADD_TYPE_ENUM == 1
+                  , TYPE_ENUM type
+                  #endif
+                  )
 {
   if (!l)
     errx(1, "linked list is NULL");
-  
+
   struct llist_elt *new = malloc(sizeof(struct llist_elt));
   if (!new)
     perror(NULL);
   new->data = data;
   new->next = NULL;
+  #if ADD_TYPE_ENUM == 1
+  new->type = type;
+  #endif
 
   struct llist_elt *cur = l->head;
   if (!cur)
@@ -54,7 +61,7 @@ DATA_TYPE llist_pop(struct llist *l)
   {
     DATA_TYPE ret = cur->data;
     #if FREE_DATA != 0
-      free(cur->data);
+    free(cur->data);
     #endif
     free(cur);
     l->head = NULL;
@@ -66,7 +73,7 @@ DATA_TYPE llist_pop(struct llist *l)
     cur = cur->next;
   DATA_TYPE ret = cur->next->data;
   #if FREE_DATA != 0
-    free(cur->next->data);
+  free(cur->next->data);
   #endif
   free(cur->next);
   cur->next = NULL;
@@ -94,7 +101,7 @@ size_t llist_get_size(struct llist *l)
 {
   if (!l)
     errx(1, "linked list is NULL");
-  
+
   return l->size;
 }
 
@@ -113,7 +120,7 @@ void llist_print(struct llist *l, void (*print_fun)(DATA_TYPE data))
 {
   if (!l)
     errx(1, "linked list is NULL");
-  
+
   if (l->size == 0)
   {
     printf("empty linked list\n");

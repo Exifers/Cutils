@@ -16,12 +16,12 @@ void test_list(void)
 
   llist_print(l, print_int);
 
-  llist_append(l, 2);
-  llist_append(l, 3);
-  llist_append(l, 4);
-  llist_append(l, 5);
-  llist_append(l, 6);
-  llist_append(l, 7);
+  llist_append(l, 2, NUMBER);
+  llist_append(l, 3, NUMBER);
+  llist_append(l, 4, NUMBER);
+  llist_append(l, 5, NUMBER);
+  llist_append(l, 6, NUMBER);
+  llist_append(l, 43, NUMBER);
 
   llist_print(l, print_int);
 
@@ -33,10 +33,10 @@ void test_list(void)
 
   llist_print(l, print_int);
 
-  llist_append(l, 2);
-  llist_append(l, 3);
-  llist_append(l, 4);
-  llist_append(l, 5);
+  llist_append(l, 123, NUMBER);
+  llist_append(l, 43, NUMBER);
+  llist_append(l, 7, NUMBER);
+  llist_append(l, 8, NUMBER);
 
   llist_get_size(l);
 
@@ -60,7 +60,37 @@ void test_list(void)
 
 void test_dict(void)
 {
+  struct dict *d = dict_init();
 
+  dict_pop(d);
+  
+  dict_get_item(d, "a");
+
+  dict_get_size(d);
+
+  dict_print(d, print_int);
+
+  dict_append(d, 2, NUMBER, "a");
+  dict_append(d, 3, NUMBER, "b");
+  dict_append(d, 4, NUMBER, "c");
+  dict_append(d, 5, NUMBER, "d");
+  dict_append(d, 6, NUMBER, "e");
+  dict_append(d, 7, NUMBER, "f");
+  dict_append(d, 8, NUMBER, "g");
+  dict_append(d, 9, NUMBER, "hu");
+  dict_append(d, 10, NUMBER, "i");
+
+  dict_print(d, print_int);
+
+  dict_pop(d);
+  dict_pop(d);
+  dict_pop(d);
+
+  dict_get_size(d);
+
+  dict_print(d, print_int);
+
+  dict_free(d);
 }
 
 

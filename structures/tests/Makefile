@@ -12,7 +12,7 @@ all: $(obj)
 	$(CC) $(CFLAGS) $(src) -o $(bin)
 
 debug : $(obj)
-	$(CC) $(CFLAGS) $< -o $(bin)
+	$(CC) $(CFLAGS) $^ -o $(bin)
 
 clean:
 	$(RM) $(obj) $(bin)
