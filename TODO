@@ -1,3 +1,5 @@
 
 [ ] show number of .h files to be generated and ask confirmation
 [ ] ask user before deleting existing .h files
+
+[ ] auto-generated test_suite from header file and flags on protoypes
