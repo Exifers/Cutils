@@ -31,10 +31,10 @@ src := \$(shell find \$(srcdir) -name *.c)
 obj := \$(src:%%.c=%%.o)
 
 all: \$(obj)
-	\$(CC) \$(CFLAGS) $< -o \$(bin)
+	\$(CC) \$(CFLAGS) $^ -o \$(bin)
 
 debug : \$(obj)
-	\$(CC) \$(CFLAGS) $< -o \$(bin)
+	\$(CC) \$(CFLAGS) $^ -o \$(bin)
 
 clean:
 	\$(RM) \$(obj) \$(bin)
@@ -52,6 +52,21 @@ int main(void)
 {
   return 0;
 }" > main.c
+
+if [ $list == y ]; then
+  mkdir llist
+  cd llist
+  cp ../../../../ustruct/llist/llist.* .
+  cd ..
+fi
+
+if [ $dict == y ]; then
+  mkdir dict
+  cd dict
+  cp ../../../../ustruct/dict/dict.* .
+  cd ..
+fi
+
 cd ..
 
 echo "Project has been created successfully"
