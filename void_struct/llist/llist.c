@@ -1,6 +1,6 @@
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <err.h>
 
 #include "llist.h"
 
@@ -16,11 +16,7 @@ struct llist *llist_init(void)
   return res;
 }
 
-void llist_append(struct llist *l, LLIST_DATA_TYPE data
-                  #if LLIST_ADD_TYPE_ENUM == 1
-                  , LLIST_TYPE_ENUM type
-                  #endif
-                  )
+void llist_append(struct llist *l, void * data, int type)
 {
   if (!l)
     errx(1, "linked list is NULL");
@@ -30,9 +26,8 @@ void llist_append(struct llist *l, LLIST_DATA_TYPE data
     perror(NULL);
   new->data = data;
   new->next = NULL;
-  #if LLIST_ADD_TYPE_ENUM == 1
   new->type = type;
-  #endif
+
 
   struct llist_elt *cur = l->head;
   if (!cur)
@@ -47,15 +42,7 @@ void llist_append(struct llist *l, LLIST_DATA_TYPE data
   l->size++;
 }
 
-void llist_pop(struct llist *l
-#if LLIST_FREE_DATA == 1
-, void (*free_data)(LLIST_DATA_TYPE data
-#if LLIST_ADD_TYPE_ENUM == 1
-, LLIST_TYPE_ENUM type
-#endif
-)
-#endif
-)
+void llist_pop(struct llist *l, void (*free_data)(void * data, int type))
 {
   if (!l)
     errx(1, "linked list is NULL");
@@ -67,13 +54,7 @@ void llist_pop(struct llist *l
 
   if (!cur->next)
   {
-    #if LLIST_FREE_DATA == 1
-    #if LLIST_ADD_TYPE_ENUM == 1
     free_data(cur->data, cur->type);
-    #else
-    free_data(cur->data);
-    #endif
-    #endif
     free(cur);
     l->head = NULL;
     l->size--;
@@ -82,19 +63,14 @@ void llist_pop(struct llist *l
 
   while(cur->next->next)
     cur = cur->next;
-  #if LLIST_FREE_DATA == 1
-  #if LLIST_ADD_TYPE_ENUM == 1
+
   free_data(cur->next->data, cur->next->type);
-  #else
-  free_data(cur->next->data);
-  #endif
-  #endif
   free(cur->next);
   cur->next = NULL;
   l->size--;
 }
 
-LLIST_DATA_TYPE llist_get_item(struct llist *l, size_t index)
+void * llist_get_item(struct llist *l, size_t index)
 {
   if (!l)
     errx(1, "linked list is NULL");
@@ -118,26 +94,14 @@ size_t llist_get_size(struct llist *l)
 }
 
 
-void llist_free(struct llist *l
-#if LLIST_FREE_DATA == 1
-, void (*free_data)(LLIST_DATA_TYPE data
-#if LLIST_ADD_TYPE_ENUM == 1
-, LLIST_TYPE_ENUM type
-#endif
-)
-#endif
-)
+void llist_free(struct llist *l, void (*free_data)(void * data, int type))
 {
   if (!l)
     errx(1, "linked list is NULL");
 
   size_t size = l->size;
   for (size_t i = 0; i < size; i++)
-    llist_pop(l
-    #if LLIST_FREE_DATA == 1
-    , free_data
-    #endif
-    );
+    llist_pop(l, free_data);
   free(l);
 }
 
@@ -148,11 +112,7 @@ static void print_offset(int offset)
 }
 
 void llist_print(struct llist *l, int offset, int inc,
-                 void (*print_fun)(LLIST_DATA_TYPE data,
-                 #if LLIST_ADD_TYPE_ENUM == 1
-                 enum data_type type,
-                 #endif
-                 int offset))
+                 void (*print_fun)(void * data, int type, int offset, int inc))
 {
   if (!l)
     errx(1, "linked list is NULL");
@@ -162,11 +122,7 @@ void llist_print(struct llist *l, int offset, int inc,
   for (size_t i = 0; i < l->size; i++)
   {
     print_offset(offset + inc);
-    print_fun(cur->data,
-              #if LLIST_ADD_TYPE_ENUM == 1
-              cur->type,
-              #endif
-              offset + inc);
+    print_fun(cur->data, cur->type, offset + inc, inc);
     if (i != l->size - 1)
       printf(",");
     printf("\n");

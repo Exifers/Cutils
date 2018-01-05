@@ -5,61 +5,43 @@
 #include "dict/dict.h"
 #include "main.h"
 
-void print_int(int a)
+void print_func(void *l, int offset)
 {
-  printf("%d", a);
+  llist_print(l, offset, 2, print_func);
+}
+
+void free_func(void *l)
+{
+  llist_free(l, free_func);
 }
 
 void test_list(void)
 {
   struct llist *l = llist_init();
+  llist_append(l, llist_init());
+  llist_append(l, llist_init());
 
-  llist_print(l, print_int);
+  struct llist *g = llist_init();
+  llist_append(g, llist_init());
+  llist_append(g, llist_init());
+  llist_append(g, llist_init());
 
-  llist_append(l, 2, NUMBER);
-  llist_append(l, 3, NUMBER);
-  llist_append(l, 4, NUMBER);
-  llist_append(l, 5, NUMBER);
-  llist_append(l, 6, NUMBER);
-  llist_append(l, 43, NUMBER);
+  struct llist *h = llist_init();
+  llist_append(h, g);
+  llist_append(h, l);
 
-  llist_print(l, print_int);
+  llist_print(h, 0, 2, print_func);
+  printf("\n");
 
-  llist_pop(l);
-  llist_pop(l);
-  llist_pop(l);
-
-  llist_get_size(l);
-
-  llist_print(l, print_int);
-
-  llist_append(l, 123, NUMBER);
-  llist_append(l, 43, NUMBER);
-  llist_append(l, 7, NUMBER);
-  llist_append(l, 8, NUMBER);
-
-  llist_get_size(l);
-
-  llist_print(l, print_int);
-
-  llist_get_item(l, 0);
-  llist_get_item(l, 1);
-  llist_get_item(l, 2);
-  llist_get_item(l, 3);
-  llist_get_item(l, 4);
-  llist_get_item(l, 5);
-  llist_get_item(l, 6);
-
-  llist_get_size(l);
-
-  llist_print(l, print_int);
-
-  llist_free(l);
+  llist_free(h, free_func);
 }
 
 
 void test_dict(void)
 {
+  return;
+}
+/*
   struct dict *d = dict_init();
 
   dict_pop(d);
@@ -92,7 +74,7 @@ void test_dict(void)
 
   dict_free(d);
 }
-
+*/
 
 int main(void)
 {
