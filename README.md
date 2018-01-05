@@ -16,7 +16,7 @@ Resulting files contain common preprocessor directives #ifndef, #define, etc.
 
 ## Usage
 ```bash
-./hgen.sh [search_dir]
+./hgen [search_dir]
 ```
 If *search_dir* is not provided, it searches from current directory.
 
@@ -24,6 +24,11 @@ If *search_dir* is not provided, it searches from current directory.
 
 ## Description
 Creates basic directories and file to start a project in C.
+
+## Usage
+```bash
+./prostarter
+```
 
 ## Features
 - choose project name
