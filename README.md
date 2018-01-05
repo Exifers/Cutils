@@ -18,7 +18,7 @@ Resulting files contain common preprocessor directives #ifndef, #define, etc.
 ```bash
 ./hgen.sh [search_dir]
 ```
-If *'search_dir* is not provided, it searches from current directory.
+If *search_dir* is not provided, it searches from current directory.
 
 # Prostarter
 
